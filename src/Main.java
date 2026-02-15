@@ -13,12 +13,14 @@ public class Main {
             System.exit(1);
         }
 
+
         Path input = Path.of(args[0]);
         Path output = Path.of(args[1]);
 
         try {
             String text = Files.readString(input, StandardCharsets.UTF_8);
             String censored = new Censor().censor(text);
+
             Files.writeString(output, censored, StandardCharsets.UTF_8);
             System.out.println("Done. Output: " + output.toAbsolutePath());
         } catch (IOException e) {

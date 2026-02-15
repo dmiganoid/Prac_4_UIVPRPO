@@ -5,14 +5,17 @@ public class Censor {
     private static final String TOKEN = "[censored]";
 
     public String censor(String text) {
-        // Порядок важен: сначала ссылки/координаты/телефоны, потом имена (чтобы не ломать контекст)
-        text = replaceAll(text, Patterns.MAP_LINKS, TOKEN);
-        text = replaceAll(text, Patterns.COORDINATES, TOKEN);
-        text = replaceAll(text, Patterns.ADDRESS_LIKE, TOKEN);
+        text = normalize(text);
 
-        text = replaceAll(text, Patterns.PHONE, TOKEN);
+        text = Patterns.MAP_LINKS.matcher(text).replaceAll(TOKEN);
+        text = Patterns.COORDINATES.matcher(text).replaceAll(TOKEN);
+        text = Patterns.ADDRESS_LIKE.matcher(text).replaceAll(TOKEN);
+        text = Patterns.PHONE.matcher(text).replaceAll(TOKEN);
 
-        text = censorNameSurnamePairs(text);
+        // имена
+        text = Patterns.NAME_SURNAME_PAIR.matcher(text).replaceAll(TOKEN);
+        text = Patterns.ADDRESSING_NAME.matcher(text).replaceAll("$1 " + TOKEN);
+        text = Patterns.SIGN_OFF_NAME.matcher(text).replaceAll("С уважением, " + TOKEN);
 
         return text;
     }
@@ -34,4 +37,14 @@ public class Censor {
 
         return result;
     }
+
+    private static String normalize(String s) {
+        s = s.replace('\u00A0', ' ')
+                .replace('\u202F', ' ')
+                .replace('\u2007', ' ');
+        s = s.replace("\r\n", "\n").replace("\r", "\n");
+        s = s.replace('\t', ' ');
+        return s;
+    }
+
 }
