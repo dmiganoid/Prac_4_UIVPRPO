@@ -1,4 +1,5 @@
-import java.util.regex.Matcher;
+package main.java;
+
 import java.util.regex.Pattern;
 
 public class Censor {

@@ -9,25 +9,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+          cache: maven
 
-      - name: Compile
-        run: |
-          mkdir -p out
-          find . -name "*.java" > sources.txt
-          if [ ! -s sources.txt ]; then
-            echo "No .java files found"
-            exit 1
-          fi
-          javac -d out @sources.txt
-          echo "OK"
+      - name: Build
+        run: mvn -B verify
 
   sonarqube:
     name: SonarQube
@@ -40,6 +34,3 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.java.binaries=out
