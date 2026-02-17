@@ -22,7 +22,7 @@ public class Main {
             String censored = new Censor().censor(text);
 
             Files.writeString(output, censored, StandardCharsets.UTF_8);
-            System.out.println("Done. Output: " + output.toAbsolutePath());
+            System.out.println("Готово. Вывод: " + output.toAbsolutePath());
         } catch (IOException e) {
             System.err.println("I/O error: " + e.getMessage());
             System.exit(2);
